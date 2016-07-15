@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Ploting Data</title>
+    <meta charset="utf-8">
+    <script src="d3.min.js"></script>
+    <script type="text/javascript" src="script.js"></script>
+</head>
+
+<body>
+    <div id="stackedbar" style="display: block;" onload="plotBar()">
+        <svg width="960" height="500"></svg>
+    </div>
+    <div id="pieChart" style="display: block;" onload="plotPie()">
+        <canvas width="960" height="500"></canvas>
+    </div>
+    <div id="seriesline" style="display: block;" onload="plotLine()">
+    </div>
+    <script>
+    plotLine();
+    plotPie();
+    plotBar();
+    </script>
+</body>
+
+</html>
