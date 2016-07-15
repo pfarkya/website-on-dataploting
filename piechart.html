@@ -1,69 +1,72 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-<meta charset="utf-8">
-<title>Pie Chart</title>
+    <meta charset="utf-8">
+    <title>Pie Chart</title>
 </head>
+
 <body>
-<canvas width="960" height="500"></canvas>
-<script src="https://d3js.org/d3.v4.min.js"></script>
-<script>
+    <canvas width="960" height="500"></canvas>
+    <script src="d3.min.js"></script>
+    <script>
+    var canvas = document.querySelector("canvas"),
+        context = canvas.getContext("2d");
 
-var canvas = document.querySelector("canvas"),
-    context = canvas.getContext("2d");
+    var width = canvas.width - 40,
+        height = canvas.height - 50,
+        radius = Math.min(width, height) / 2;
 
-var width = canvas.width-40,
-    height = canvas.height-50,
-    radius = Math.min(width, height) / 2;
+    var colors = ["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00", "#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"];
+    //var colors=d3.scale.category10();
 
- var colors = ["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00","#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"];
-//var colors=d3.scale.category10();
+    var arc = d3.arc()
+        .outerRadius(radius - 10)
+        .innerRadius(20)
+        .context(context);
 
-var arc = d3.arc()
-    .outerRadius(radius - 10)
-    .innerRadius(20)
-    .context(context);
+    var labelArc = d3.arc()
+        .outerRadius(radius + 20)
+        .innerRadius(radius - 20)
+        .context(context);
 
-var labelArc = d3.arc()
-    .outerRadius(radius+20)
-    .innerRadius(radius-20)
-    .context(context);
+    var pie = d3.pie()
+        .sort(null)
+        .value(function(d) {
+            return d.count;
+        });
 
-var pie = d3.pie()
-    .sort(null)
-    .value(function(d) { return d.count; });
+    context.translate(width / 2, height / 2);
 
-context.translate(width / 2, height / 2);
+    d3.json("robData.json", function(error, data) {
+        if (error) throw error;
+        data.forEach(function(d) {
+            d.count = +d.count;
+            // return d;
+        });
+        var arcs = pie(data);
 
-d3.json("robData.json",  function(error, data) {
-  if (error) throw error;
-  data.forEach(function(d) {
-  d.count = +d.count;
- // return d;
-  });
-  var arcs = pie(data);
+        arcs.forEach(function(d, i) {
+            context.beginPath();
+            arc(d);
+            context.fillStyle = colors[i];
+            context.fill();
+        });
 
-  arcs.forEach(function(d,i) {
-    context.beginPath();
-    arc(d);
-    context.fillStyle = colors[i];
-    context.fill();
-  });
+        context.beginPath();
+        arcs.forEach(arc);
+        context.strokeStyle = "#fff";
+        context.stroke();
 
-  context.beginPath();
-  arcs.forEach(arc);
-  context.strokeStyle = "#fff";
-  context.stroke();
-
-  context.textAlign = "center";
-  context.textBaseline = "middle";
-  context.fillStyle = "#000";
-  arcs.forEach(function(d) {
-    var c = labelArc.centroid(d);
-    context.fillText(d.data.typeofrobbery, c[0], c[1]);
-  });
-});
-
-</script>
+        context.textAlign = "center";
+        context.textBaseline = "middle";
+        context.fillStyle = "#000";
+        arcs.forEach(function(d) {
+            var c = labelArc.centroid(d);
+            context.fillText(d.data.typeofrobbery, c[0], c[1]);
+        });
+    });
+    </script>
 </body>
+
 </html>

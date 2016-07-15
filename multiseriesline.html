@@ -1,124 +1,162 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-  <meta charset="utf-8">
-  <title>Plot</title>
-  <style>
-
-  body {
-    font: 10px sans-serif;
-  }
-
-  .axis path,
-  .axis line {
-    fill: none;
-    stroke: #000;
-    shape-rendering: crispEdges;
-  }
-
-  .x.axis path {
-    display: none;
-  }
-
-  .line {
-    fill: none;
-    stroke: steelblue;
-    stroke-width: 1.5px;
-  }
-
-  </style>
+    <meta charset="utf-8">
+    <title>Plot</title>
+    <style>
+    body {
+        font: 10px sans-serif;
+    }
+    
+    .axis path,
+    .axis line {
+        fill: none;
+        stroke: #000;
+        shape-rendering: crispEdges;
+    }
+    
+    .x.axis path {
+        display: none;
+    }
+    
+    .line {
+        fill: none;
+        stroke: steelblue;
+        stroke-width: 1.5px;
+    }
+    </style>
 </head>
+
 <body>
-<script src="//d3js.org/d3.v4.min.js"></script>
-<script>
-//console.log("its going on");
-var margin = {top: 20, right: 80, bottom: 30, left: 50},
-    width = 960 - margin.left - margin.right,
-    height = 500 - margin.top - margin.bottom;
+    <script src="d3.min.js"></script>
+    <script>
+    //console.log("its going on");
+    var margin = {
+            top: 20,
+            right: 80,
+            bottom: 30,
+            left: 50
+        },
+        width = 960 - margin.left - margin.right,
+        height = 500 - margin.top - margin.bottom;
 
-var parseDate = d3.timeParse("%m/%d/%Y");
+    var parseDate = d3.timeParse("%m/%d/%Y");
 
-var x = d3.scaleTime()
-    .range([0, width]);
+    var x = d3.scaleTime()
+        .range([0, width]);
 
-var y = d3.scaleLinear()
-    .range([height, 0]);
+    var y = d3.scaleLinear()
+        .range([height, 0]);
 
-var color = d3.scaleOrdinal(d3.schemeCategory10);
+    var color = d3.scaleOrdinal(d3.schemeCategory10);
 
-var xAxis =  d3.axisBottom(x);
+    var xAxis = d3.axisBottom(x);
 
-var yAxis =  d3.axisLeft(y);
+    var yAxis = d3.axisLeft(y);
 
-var line = d3.line()
-    .x(function(d) { return x(d.date); })
-    .y(function(d) { return y(d.crimeCount); });
+    var line = d3.line()
+        .x(function(d) {
+            return x(d.date);
+        })
+        .y(function(d) {
+            return y(d.crimeCount);
+        });
 
-var svg = d3.select("body").append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
-  .append("g")
-    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-//console.log("its going on");
-d3.json("rdData.json", function(error, data) {
-  if (error) throw error;
+    var svg = d3.select("body").append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    //console.log("its going on");
+    d3.json("rdData.json", function(error, data) {
+        if (error) throw error;
 
-  color.domain(d3.keys(data[0]).filter(function(key) { return key !== "date"; }));
+        color.domain(d3.keys(data[0]).filter(function(key) {
+            return key !== "date";
+        }));
 
-  data.forEach(function(d) {
-    d.date = parseDate(d.date);
-    // console.log(d.date);
-  });
+        data.forEach(function(d) {
+            d.date = parseDate(d.date);
+            // console.log(d.date);
+        });
 
-  var type = color.domain().map(function(name) {
-    return {
-      name: name,
-      values: data.map(function(d) {
-        return {date: d.date, crimeCount: +d[name]};
-      })
-    };
-  });
+        var type = color.domain().map(function(name) {
+            return {
+                name: name,
+                values: data.map(function(d) {
+                    return {
+                        date: d.date,
+                        crimeCount: +d[name]
+                    };
+                })
+            };
+        });
 
-   //x.domain();
-   x.domain(d3.extent(data, function(d) { return d.date; }));
+        //x.domain();
+        x.domain(d3.extent(data, function(d) {
+            return d.date;
+        }));
 
-  y.domain([
-    d3.min(type, function(c) { return d3.min(c.values, function(v) { return v.crimeCount; }); }),
-    d3.max(type, function(c) { return d3.max(c.values, function(v) { return v.crimeCount; }); })
-  ]);
+        y.domain([
+            d3.min(type, function(c) {
+                return d3.min(c.values, function(v) {
+                    return v.crimeCount;
+                });
+            }),
+            d3.max(type, function(c) {
+                return d3.max(c.values, function(v) {
+                    return v.crimeCount;
+                });
+            })
+        ]);
 
-  svg.append("g")
-      .attr("class", "axis  axis--x")
-      .attr("transform", "translate(0," + height + ")")
-      .call(xAxis);
+        svg.append("g")
+            .attr("class", "axis  axis--x")
+            .attr("transform", "translate(0," + height + ")")
+            .call(xAxis.ticks(20));
 
-  svg.append("g")
-      .attr("class", "y axis")
-      .call(yAxis)
-    .append("text")
-      .attr("transform", "rotate(-90)")
-      .attr("y", 6)
-      .attr("dy", ".71em")
-      .style("text-anchor", "end")
-      .text("Crime Count in Numbers");
+        svg.append("g")
+            .attr("class", "y axis")
+            .call(yAxis)
+            .append("text")
+            .attr("transform", "rotate(-90)")
+            .attr("y", 6)
+            .attr("dy", ".71em")
+            .style("text-anchor", "end")
+            .text("Crime Count in Numbers");
 
-  var city = svg.selectAll(".type")
-      .data(type)
-    .enter().append("g")
-      .attr("class", "type");
+        var city = svg.selectAll(".type")
+            .data(type)
+            .enter().append("g")
+            .attr("class", "type");
 
-  city.append("path")
-      .attr("class", "line")
-      .attr("d", function(d) { return line(d.values); })
-      .style("stroke", function(d) { return color(d.name); });
+        city.append("path")
+            .attr("class", "line")
+            .attr("d", function(d) {
+                return line(d.values);
+            })
+            .style("stroke", function(d) {
+                return color(d.name);
+            });
 
-  city.append("text")
-      .datum(function(d) { return {name: d.name, value: d.values[d.values.length - 1]}; })
-      .attr("transform", function(d) { return "translate(" + x(d.value.date) + "," + y(d.value.crimeCount) + ")"; })
-      .attr("x", 3)
-      .attr("dy", ".35em")
-      .text(function(d) { return d.name; });
-});
-</script>
+        city.append("text")
+            .datum(function(d) {
+                return {
+                    name: d.name,
+                    value: d.values[d.values.length - 1]
+                };
+            })
+            .attr("transform", function(d) {
+                return "translate(" + x(d.value.date) + "," + y(d.value.crimeCount) + ")";
+            })
+            .attr("x", 3)
+            .attr("dy", ".35em")
+            .text(function(d) {
+                return d.name;
+            });
+    });
+    </script>
 </body>
+
 </html>
