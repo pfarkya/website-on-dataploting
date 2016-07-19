@@ -1,3 +1,4 @@
+/*Ploting multi series line*/
 function plotLine() {
     var margin = {
             top: 20,
@@ -36,7 +37,7 @@ function plotLine() {
         .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
     //console.log("its going on");
-    d3.json("rdData.json", function(error, data) {
+    d3.json("data/robberyAndBurglaryData.json", function(error, data) {
         if (error) throw error;
 
         color.domain(d3.keys(data[0]).filter(function(key) {
@@ -103,6 +104,7 @@ function plotLine() {
             .attr("d", function(d) {
                 return line(d.values);
             })
+            .attr("fill", "none")
             .style("stroke", function(d) {
                 return color(d.name);
             });
@@ -126,9 +128,7 @@ function plotLine() {
 
 
 }
-
-
-
+/* Ploting Pie*/
 function plotPie() {
     var canvas = document.querySelector("canvas"),
         context = canvas.getContext("2d");
@@ -138,7 +138,6 @@ function plotPie() {
         radius = Math.min(width, height) / 2;
 
     var colors = ["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00", "#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"];
-    //var colors=d3.scale.category10();
 
     var arc = d3.arc()
         .outerRadius(radius - 10)
@@ -156,9 +155,9 @@ function plotPie() {
             return d.count;
         });
 
-    context.translate(width / 2, height / 2);
+    context.translate(radius + 40, height / 2);
 
-    d3.json("robData.json", function(error, data) {
+    d3.json("data/robberyData.json", function(error, data) {
         if (error) throw error;
         data.forEach(function(d) {
             d.count = +d.count;
@@ -187,8 +186,7 @@ function plotPie() {
         });
     });
 }
-
-
+/*ploting Stacked Bar Chart*/
 function plotBar() {
     var svg = d3.select("#stackedbar svg"),
         margin = {
@@ -214,7 +212,7 @@ function plotBar() {
 
     var stack = d3.stack();
 
-    d3.json("cdData.json", function(error, data) {
+    d3.json("data/criminalData.json", function(error, data) {
         if (error) throw error;
         x.domain(data.map(function(d) {
             return d.year;
@@ -222,22 +220,17 @@ function plotBar() {
         var drang = d3.keys(data[0]).filter(function(key) {
             return key !== "year";
         });
-        console.log(drang);
         z.domain(drang);
         data.forEach(function(d) {
             d.criminalDamageToProperty = +d.criminalDamageToProperty;
             d.criminalDamageToVehical = +d.criminalDamageToVehical;
             d.criminalDamageToSSP = +d.criminalDamageToSSP;
             d.total = +d.criminalDamageToVehical + d.criminalDamageToSSP + d.criminalDamageToProperty;
-            //console.log(d.total);
         });
-        //data.sort(function(a, b) { return b.total - a.total; });
 
         y.domain([0, d3.max(data, function(d) {
             return d.total
         })]);
-
-        //console.log(d3.keys(data[0]));
 
         g.selectAll(".serie")
             .data(stack.keys(drang)(data))

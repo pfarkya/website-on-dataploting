@@ -4,19 +4,42 @@
 <head>
     <title>Ploting Data</title>
     <meta charset="utf-8">
-    <script src="d3.min.js"></script>
-    <script type="text/javascript" src="script.js"></script>
+    <!-- Mobile viewport optimized -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!-- Bootstrap CSS -->
+    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="includes/css/bootstrap-glyphicons.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="includes/css/styles.css" rel="stylesheet">
+    <!-- Include Modernizr in the head, before any other Javascript -->
+    <script src="includes/js/modernizr-2.6.2.min.js"></script>
 </head>
 
 <body>
-    <div id="stackedbar" style="display: block;" onload="plotBar()">
-        <svg width="960" height="500"></svg>
+    <div class="container">
+        <div id="stackedbar" style="display: block;" onload="plotBar()">
+            <svg width="960" height="500"></svg>
+        </div>
+        <div id="pieChart" style="display: block;" onload="plotPie()">
+            <canvas width="960" height="500"></canvas>
+        </div>
+        <div id="seriesline" style="display: block;" onload="plotLine()">
+        </div>
     </div>
-    <div id="pieChart" style="display: block;" onload="plotPie()">
-        <canvas width="960" height="500"></canvas>
-    </div>
-    <div id="seriesline" style="display: block;" onload="plotLine()">
-    </div>
+    <!-- Library for D3-->
+    <script src="includes/js/d3.min.js"></script>
+    <!-- First try for the online version of jQuery-->
+    <!-- <script src="http://code.jquery.com/jquery.js"></script> -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <!-- If no online access, fallback to our hardcoded version of jQuery -->
+    <script>
+    window.jQuery || document.write('<script src="includes/js/jquery-1.11.3.min.js"><\/script>')
+    </script>
+    <!-- Bootstrap JS -->
+    <script src="bootstrap/js/bootstrap.min.js"></script>
+    <!-- Custom JS -->
+    <script src="includes/js/script.js"></script>
+    <script type="text/javascript" src="script.js"></script>
     <script>
     plotLine();
     plotPie();
