@@ -139,10 +139,6 @@ function plotPie() {
     var arc = d3.arc()
         .outerRadius(radius - 10)
         .innerRadius(20);
-
-
-
-
     d3.json("robData.json", function(error, data) {
         if (error) throw error;
         var Type = [];
@@ -150,8 +146,6 @@ function plotPie() {
             d.count = +d.count;
             Type.push(d.typeofrobbery)
         });
-
-
         color.domain(Type);
         var pie = d3.pie()
             .value(function(d) {
@@ -166,7 +160,6 @@ function plotPie() {
             .append("g")
             .attr("class", "arc")
             .attr("transform", "translate(" + (radius - 20) + "," + (radius - 20) + ")");
-
 
         arcs.append("path")
             .attr("fill", function(d, i) {
@@ -200,9 +193,6 @@ function plotPie() {
                 return d;
             });
     });
-
-
-
 }
 /*ploting Stacked Bar Chart*/
 function plotBar() {
