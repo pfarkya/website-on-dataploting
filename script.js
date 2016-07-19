@@ -36,7 +36,6 @@ function plotLine() {
         .attr("height", height + margin.top + margin.bottom)
         .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-    //console.log("its going on");
     d3.json("data/robberyAndBurglaryData.json", function(error, data) {
         if (error) throw error;
 
@@ -46,7 +45,6 @@ function plotLine() {
 
         data.forEach(function(d) {
             d.date = parseDate(d.date);
-            // console.log(d.date);
         });
 
         var type = color.domain().map(function(name) {
@@ -125,8 +123,6 @@ function plotLine() {
                 return d.name;
             });
     });
-
-
 }
 /* Ploting Pie*/
 function plotPie() {

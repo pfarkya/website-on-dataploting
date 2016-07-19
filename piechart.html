@@ -7,64 +7,120 @@
 </head>
 
 <body>
-    <canvas width="960" height="500"></canvas>
-    <script src="d3.min.js"></script>
+    <div id="pieChart"></div>
+    <script src="includes/js/d3.min.js"></script>
     <script>
-    var canvas = document.querySelector("canvas"),
-        context = canvas.getContext("2d");
+    var width = 960,
+        height = 500,
+        radius = Math.min(width - 40, height - 40) / 2;
+    var svg = d3.select('#pieChart')
+        .append("svg")
+        .attr("height", "500")
+        .attr("width", "960")
+        .append("g")
+        .attr("transform", "translate( 20  , 20 )");
 
-    var width = canvas.width - 40,
-        height = canvas.height - 50,
-        radius = Math.min(width, height) / 2;
-
-    var colors = ["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00", "#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"];
-    //var colors=d3.scale.category10();
+    var color = d3.scaleOrdinal(d3.schemeCategory10);
 
     var arc = d3.arc()
         .outerRadius(radius - 10)
-        .innerRadius(20)
-        .context(context);
+        .innerRadius(20);
 
-    var labelArc = d3.arc()
-        .outerRadius(radius + 20)
-        .innerRadius(radius - 20)
-        .context(context);
 
-    var pie = d3.pie()
-        .sort(null)
-        .value(function(d) {
-            return d.count;
-        });
 
-    context.translate(width / 2, height / 2);
 
     d3.json("robData.json", function(error, data) {
         if (error) throw error;
+        var Type = [];
         data.forEach(function(d) {
             d.count = +d.count;
-            // return d;
+            Type.push(d.typeofrobbery)
         });
+
+
+        color.domain(Type);
+        var pie = d3.pie()
+            .value(function(d) {
+                return d.count;
+            });
+
         var arcs = pie(data);
 
-        arcs.forEach(function(d, i) {
-            context.beginPath();
-            arc(d);
-            context.fillStyle = colors[i];
-            context.fill();
-        });
+        var arcs = svg.selectAll("g.arc")
+            .data(pie(data))
+            .enter()
+            .append("g")
+            .attr("class", "arc")
+            .attr("transform", "translate(" + (radius - 20) + "," + (radius - 20) + ")");
 
-        context.beginPath();
-        arcs.forEach(arc);
-        context.strokeStyle = "#fff";
-        context.stroke();
 
-        context.textAlign = "center";
-        context.textBaseline = "middle";
-        context.fillStyle = "#000";
-        arcs.forEach(function(d) {
-            var c = labelArc.centroid(d);
-            context.fillText(d.data.typeofrobbery, c[0], c[1]);
-        });
+        arcs.append("path")
+            .attr("fill", function(d, i) {
+                return color(i)
+            })
+            .attr("d", arc);
+
+        /*        arcs.append("text")
+                    .attr("transform", function(d) {
+                        return "translate(" + arc.centroid(d) + ")"
+                    })
+                    .attr("text-anchor", "middle")
+                    .text(function(d, i) {
+                        return d.value;
+                    });*/
+        /*
+
+                var legend = svg.append("rect")
+                    .classed("legend", true)
+                    .attr("x", 40 + radius * 2)
+                    .attr("y", 40)
+                    .attr("width", width)
+                    .attr("height", height);*/
+
+        var legend = svg.selectAll(".legend")
+            .data(Type)
+            .enter().append("g")
+            .attr("class", "legend")
+            .attr("transform", function(d, i) {
+                return "translate(0," + i * 20 + ")";
+            })
+            .style("font", "10px sans-serif");
+
+        legend.append("rect")
+            .attr("x", width - 38)
+            .attr("width", 18)
+            .attr("height", 18)
+            .attr("fill", function(d, i) {
+                return color(d);
+            });
+
+        legend.append("text")
+            .attr("x", width - 56)
+            .attr("y", 9)
+            .attr("dy", ".35em")
+            .attr("text-anchor", "end")
+            .text(function(d) {
+                return d;
+            });
+        // arcs.forEach(function(d, i) {
+        //     context.beginPath();
+        //     arc(d);
+        //     context.fillStyle = colors[i];
+        //     context.fill();
+        // });
+
+        // context.beginPath();
+        // arcs.forEach(arc);
+        // context.strokeStyle = "#fff";
+        // context.stroke();
+
+        // context.textAlign = "center";
+        // context.textBaseline = "middle";
+        // context.fillStyle = "#000";
+        // arcs.forEach(function(d) {
+        //     var c = labelArc.centroid(d);
+        //     context.fillText(d.data.typeofrobbery, c[0], c[1]);
+        // });
     });
     </script>
 </body>

@@ -17,13 +17,36 @@
 
 <body>
     <div class="container">
-        <div id="stackedbar" style="display: block;" onload="plotBar()">
-            <svg width="960" height="500"></svg>
-        </div>
-        <div id="pieChart" style="display: block;" onload="plotPie()">
-            <canvas width="960" height="500"></canvas>
-        </div>
-        <div id="seriesline" style="display: block;" onload="plotLine()">
+        <header>
+            <h1>Different Graphs</h1>
+        </header>
+        <div class="row">
+            <div class="tabbable">
+                <ul class="nav nav-tabs">
+                    <li class="active"><a href="#tab1" data-toggle="tab">Stacked Bar On Criminal Damage</a></li>
+                    <li><a href="#tab2" data-toggle="tab">Pie Chart on Type of Roberry</a></li>
+                    <li><a href="#tab3" data-toggle="tab">Multi Series Line On Burglary And Roberry</a></li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane active" id="tab1">
+                        <h4>Stacked Bar On Criminal Damage</h4>
+                        <div id="stackedbar" style="display: block;">
+                            <svg width="960" height="500"></svg>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="tab2">
+                        <h4>Pie Chart on Type of Roberry</h4>
+                        <div id="pieChart" style="display: block;">
+                        </div>
+                    </div>
+                    <div id="tab3" class="tab-pane">
+                        <h4>Multi Series Line On Burglary And Roberry</h4>
+                        <div id="seriesline" style="display: block;">
+                        </div>
+                    </div>
+                </div>
+                <!-- tab-content end-->
+            </div>
         </div>
     </div>
     <!-- Library for D3-->
@@ -39,12 +62,6 @@
     <script src="bootstrap/js/bootstrap.min.js"></script>
     <!-- Custom JS -->
     <script src="includes/js/script.js"></script>
-    <script type="text/javascript" src="script.js"></script>
-    <script>
-    plotLine();
-    plotPie();
-    plotBar();
-    </script>
 </body>
 
 </html>
